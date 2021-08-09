@@ -21,7 +21,7 @@ interface NoteDao {
     suspend fun deleteAllSyncedNotes()
 
     @Query("SELECT * FROM notes WHERE id = :noteID")
-    fun observeNoteById(noteID: String): StateFlow<Note>
+    fun observeNoteById(noteID: String): Flow<Note>
 
     @Query("SELECT * FROM notes WHERE id = :noteID")
     suspend fun getNoteById(noteID: String): Note?
@@ -29,5 +29,6 @@ interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY date DESC")
     fun getAllNotes(): Flow<List<Note>>
 
+    @Query("SELECT * FROM notes WHERE isSynced = 0")
     suspend fun getAllUnsyncedNotes(): List<Note>
 }
