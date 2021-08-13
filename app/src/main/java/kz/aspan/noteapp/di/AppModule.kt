@@ -7,11 +7,17 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kz.aspan.noteapp.data.local.NoteDao
 import kz.aspan.noteapp.data.local.NotesDatabase
 import kz.aspan.noteapp.data.remote.BasicAuthInterceptor
 import kz.aspan.noteapp.data.remote.NoteApi
 import kz.aspan.noteapp.other.Constants
 import kz.aspan.noteapp.other.Constants.DATABASE_NAME
+import kz.aspan.noteapp.other.DispatcherProvider
+import kz.aspan.noteapp.repositories.DefaultNoteRepository
+import kz.aspan.noteapp.repositories.NoteRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,6 +27,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideNoteRepository(
+        noteApi: NoteApi,
+        @ApplicationContext context: Context,
+        noteDao: NoteDao
+    ): NoteRepository = DefaultNoteRepository(noteDao, noteApi, context)
 
     @Singleton
     @Provides
@@ -58,5 +72,19 @@ object AppModule {
             .build()
             .create(NoteApi::class.java)
 
+    }
+
+    @Singleton
+    @Provides
+    fun provideDispatcherProvider(): DispatcherProvider {
+        return object : DispatcherProvider {
+            override val main: CoroutineDispatcher
+                get() = Dispatchers.Main
+            override val io: CoroutineDispatcher
+                get() = Dispatchers.IO
+            override val default: CoroutineDispatcher
+                get() = Dispatchers.Default
+
+        }
     }
 }
