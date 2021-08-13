@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kz.aspan.noteapp.R
 import kz.aspan.noteapp.databinding.FragmentAuthBinding
@@ -20,6 +21,10 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAuthBinding.bind(view)
+
+        binding.btnLogin.setOnClickListener {
+            findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToNotesFragment())
+        }
     }
 
     override fun onDestroy() {
