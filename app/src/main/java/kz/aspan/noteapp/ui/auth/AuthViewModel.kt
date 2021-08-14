@@ -1,5 +1,6 @@
 package kz.aspan.noteapp.ui.auth
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +20,9 @@ class AuthViewModel @Inject constructor(
 
     sealed class Event {
         object RegisterLoadingEvent : Event()
-        object InputEmptyError : Event()
+        object ErrorInputEmpty : Event()
         object PasswordsDoNotMatch : Event()
+        object NotAValidEmail : Event()
 
         data class RegisterEvent(val message: String) : Event()
         data class RegisterErrorEvent(val error: String) : Event()
@@ -38,10 +40,13 @@ class AuthViewModel @Inject constructor(
 
             when {
                 (trimmedEmail.isEmpty() || trimmedPassword.isEmpty() || trimmedRepeatPassword.isEmpty()) -> {
-                    _registerStatus.emit(Event.InputEmptyError)
+                    _registerStatus.emit(Event.ErrorInputEmpty)
                 }
                 trimmedPassword != trimmedRepeatPassword -> {
                     _registerStatus.emit(Event.PasswordsDoNotMatch)
+                }
+                !Patterns.EMAIL_ADDRESS.matcher(trimmedEmail).matches() -> {
+                    _registerStatus.emit(Event.NotAValidEmail)
                 }
                 else -> {
                     val result = repository.register(trimmedEmail, trimmedPassword)

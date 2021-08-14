@@ -24,6 +24,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -87,4 +91,9 @@ object AppModule {
 
         }
     }
+
+    @Singleton
+    @Provides
+    fun dataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        preferencesDataStore(name = "data-store").getValue(context, String::javaClass)
 }
