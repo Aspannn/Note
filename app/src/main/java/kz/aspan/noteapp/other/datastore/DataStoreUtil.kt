@@ -9,8 +9,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kz.aspan.noteapp.other.Constants.DATA
-import kz.aspan.noteapp.other.Constants.SECURED_DATA
 import javax.inject.Inject
 
 class DataStoreUtil
@@ -22,25 +20,14 @@ constructor(
     private val securityKeyAlias = "data-store"
     private val bytesToStringSeparator = "|"
 
-    fun getData() = dataStore.data
-        .map { preferences ->
-            preferences[DATA].orEmpty()
-        }
-
-    suspend fun setData(value: String) {
-        dataStore.edit {
-            it[DATA] = value
-        }
-    }
-
-    fun getSecuredData() = dataStore.data
+    fun getSecuredData(preferencesKey: String) = dataStore.data
         .secureMap<String> { pref ->
-            pref[SECURED_DATA].orEmpty()
+            pref[stringPreferencesKey(preferencesKey)].orEmpty()
         }
 
-    suspend fun setSecuredData(value: String) {
+    suspend fun setSecuredData(preferencesKey: String, value: String?) {
         dataStore.secureEdit(value) { prefs, encryptedValue ->
-            prefs[SECURED_DATA] = encryptedValue
+            prefs[stringPreferencesKey(preferencesKey)] = encryptedValue
         }
     }
 

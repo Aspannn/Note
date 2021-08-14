@@ -11,4 +11,5 @@
     <string name="error_input_empty">Please fill out all the fields</string>
     <string name="error_not_a_valid_email">Please enter a valid E-Mail</string>
     <string name="success_registration">Successfully registered account</string>
+    <string name="success_logged_in">Successfully logged in</string>
 </resources>

@@ -27,6 +27,7 @@ import javax.inject.Singleton
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import kz.aspan.noteapp.other.Constants.ENCRYPTED_DATA_STORE_PREF_NAME
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -95,5 +96,5 @@ object AppModule {
     @Singleton
     @Provides
     fun dataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        preferencesDataStore(name = "data-store").getValue(context, String::javaClass)
+        preferencesDataStore(name = ENCRYPTED_DATA_STORE_PREF_NAME).getValue(context, String::javaClass)
 }

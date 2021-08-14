@@ -4,4 +4,6 @@ import kz.aspan.noteapp.other.Resource
 
 interface NoteRepository {
     suspend fun register(email: String, password: String): Resource<String>
+
+    suspend fun login(email: String, password: String): Resource<String>
 }

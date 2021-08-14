@@ -19,24 +19,50 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
 
     sealed class Event {
-        object RegisterLoadingEvent : Event()
+        object LoadingEvent : Event()
         object ErrorInputEmpty : Event()
         object PasswordsDoNotMatch : Event()
         object NotAValidEmail : Event()
 
-        data class RegisterEvent(val message: String) : Event()
-        data class RegisterErrorEvent(val error: String) : Event()
+        data class SuccessEvent(val message: String) : Event()
+        data class ErrorEvent(val error: String) : Event()
     }
 
     private val _registerStatus = MutableSharedFlow<Event>()
     val registerStatus: SharedFlow<Event> = _registerStatus
+
+    private val _loginStatus = MutableSharedFlow<Event>()
+    val loginStatus: SharedFlow<Event> = _loginStatus
+
+    fun login(email: String, password: String) {
+        viewModelScope.launch(dispatchers.io) {
+            val trimmedEmail = email.trim()
+            val trimmedPassword = password.trim()
+            _loginStatus.emit(Event.LoadingEvent)
+
+            when {
+                (trimmedEmail.isEmpty() || trimmedPassword.isEmpty()) -> {
+                    _loginStatus.emit(Event.ErrorInputEmpty)
+                }
+                else -> {
+                    println("TEST NEGE")
+                    val result = repository.login(trimmedEmail, trimmedPassword)
+                    if (result is Resource.Success) {
+                        _loginStatus.emit(Event.SuccessEvent(result.data ?: return@launch))
+                    } else {
+                        _loginStatus.emit(Event.ErrorEvent(result.message ?: return@launch))
+                    }
+                }
+            }
+        }
+    }
 
     fun register(email: String, password: String, repeatedPassword: String) {
         viewModelScope.launch(dispatchers.io) {
             val trimmedEmail = email.trim()
             val trimmedPassword = password.trim()
             val trimmedRepeatPassword = repeatedPassword.trim()
-            _registerStatus.emit(Event.RegisterLoadingEvent)
+            _registerStatus.emit(Event.LoadingEvent)
 
             when {
                 (trimmedEmail.isEmpty() || trimmedPassword.isEmpty() || trimmedRepeatPassword.isEmpty()) -> {
@@ -51,14 +77,16 @@ class AuthViewModel @Inject constructor(
                 else -> {
                     val result = repository.register(trimmedEmail, trimmedPassword)
                     if (result is Resource.Success) {
-                        _registerStatus.emit(Event.RegisterEvent(result.data ?: return@launch))
+                        _registerStatus.emit(Event.SuccessEvent(result.data ?: return@launch))
                     } else {
                         _registerStatus.emit(
-                            Event.RegisterErrorEvent(result.message ?: return@launch)
+                            Event.ErrorEvent(result.message ?: return@launch)
                         )
                     }
                 }
             }
         }
     }
+
+
 }
