@@ -2,7 +2,10 @@ package kz.aspan.noteapp.other.datastore
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties.*
+import android.util.Base64
+import okio.ByteString.Companion.toByteString
 import java.security.KeyStore
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -13,6 +16,7 @@ class SecurityUtil
 @Inject
 constructor() {
     private val provider = "AndroidKeyStore"
+
     private val cipher by lazy {
         Cipher.getInstance("AES/GCM/NoPadding")
     }
@@ -29,14 +33,15 @@ constructor() {
         KeyGenerator.getInstance(KEY_ALGORITHM_AES, provider)
     }
 
-    fun encryptData(keyAlias: String, text: String): ByteArray {
+    fun encryptData(keyAlias: String, text: String): List<ByteArray> {
         cipher.init(Cipher.ENCRYPT_MODE, generateSecretKey(keyAlias))
-        return cipher.doFinal(text.toByteArray(charset))
+        val iv = cipher.iv
+        return listOf(iv, cipher.doFinal(text.toByteArray(charset)))
     }
 
-    fun decryptData(keyAlias: String, encryptedData: ByteArray): String {
-        val iv = cipher.iv
-        cipher.init(Cipher.DECRYPT_MODE, getSecretKey(keyAlias), GCMParameterSpec(128, iv))
+
+    fun decryptData(keyAlias: String, iv: ByteArray, encryptedData: ByteArray): String {
+        cipher?.init(Cipher.DECRYPT_MODE, getSecretKey(keyAlias), GCMParameterSpec(128, iv))
         return cipher.doFinal(encryptedData).toString(charset)
     }
 
