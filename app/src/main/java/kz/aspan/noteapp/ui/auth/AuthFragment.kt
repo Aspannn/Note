@@ -45,10 +45,9 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAuthBinding.bind(view)
 
-//        if (isLoggedIn()) {
-//            authenticateApi(curEmail ?: "", curPassword ?: "")
-//            redirectLogin()
-//        }
+
+//        redirectLogin()
+
 
         subscribeToRegisterEvent()
         subscribeToLoginEvent()
@@ -74,15 +73,10 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
 
     }
 
-    private fun isLoggedIn(): Boolean {
-        lifecycleScope.launchWhenStarted {
-            curEmail = dataStore.getSecuredData(KEY_LOGGED_IN_EMAIL)
-            curPassword = dataStore.getSecuredData(KEY_LOGGED_IN_EMAIL)
-        }
 
-        return curEmail != EMPTY && curPassword != EMPTY
+    private fun isLogging() {
+        //TODO hz ne isteuge bolady
     }
-
 
     private fun authenticateApi(email: String, password: String) {
         basicAuthInterceptor.email = email
