@@ -1,16 +1,18 @@
 package kz.aspan.noteapp.other.datastore
 
 import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.security.keystore.KeyProperties.*
-import android.util.Base64
-import okio.ByteString.Companion.toByteString
+import java.security.InvalidAlgorithmParameterException
 import java.security.KeyStore
-import java.util.*
+import java.security.NoSuchAlgorithmException
+import java.security.NoSuchProviderException
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
+
 
 class SecurityUtil
 @Inject

@@ -75,6 +75,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etLoginEmail" />
 
+    <TextView
+        android:id="@+id/etTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Test"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etLoginPassword" />
+
+
+    <TextView
+        android:id="@+id/etTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Test2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etTest" />
 
 
 

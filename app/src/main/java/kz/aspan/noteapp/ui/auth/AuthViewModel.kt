@@ -45,7 +45,6 @@ class AuthViewModel @Inject constructor(
                     _loginStatus.emit(Event.ErrorInputEmpty)
                 }
                 else -> {
-                    println("TEST NEGE")
                     val result = repository.login(trimmedEmail, trimmedPassword)
                     if (result is Resource.Success) {
                         _loginStatus.emit(Event.SuccessEvent(result.data ?: return@launch))
