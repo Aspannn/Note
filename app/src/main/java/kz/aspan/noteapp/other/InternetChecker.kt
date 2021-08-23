@@ -7,7 +7,7 @@ import android.os.Build
 
 fun Context.checkForInternetConnection(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val activityNetwork = connectivityManager.activeNetwork ?: return false
         val capabilities =
             connectivityManager.getNetworkCapabilities(activityNetwork) ?: return false
@@ -18,7 +18,7 @@ fun Context.checkForInternetConnection(): Boolean {
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> true
             else -> false
         }
-//    }
-//
-//    return connectivityManager.activeNetworkInfo?.isAvailable ?: false
+    }
+
+    return connectivityManager.activeNetworkInfo?.isAvailable ?: false
 }

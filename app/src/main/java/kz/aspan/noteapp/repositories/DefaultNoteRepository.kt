@@ -1,12 +1,15 @@
 package kz.aspan.noteapp.repositories
 
 import android.content.Context
+import kotlinx.coroutines.flow.Flow
 import kz.aspan.noteapp.R
 import kz.aspan.noteapp.data.local.NoteDao
+import kz.aspan.noteapp.data.local.entities.Note
 import kz.aspan.noteapp.data.remote.NoteApi
 import kz.aspan.noteapp.data.remote.requests.AccountRequest
 import kz.aspan.noteapp.other.Resource
 import kz.aspan.noteapp.other.checkForInternetConnection
+import kz.aspan.noteapp.other.networkBoundResource
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -16,6 +19,21 @@ class DefaultNoteRepository @Inject constructor(
     private val noteApi: NoteApi,
     private val context: Context
 ) : NoteRepository {
+
+    override fun getAllNotes(): Flow<Resource<out List<Note>>> {
+        return networkBoundResource(
+            query = { noteDao.getAllNotes() },
+            fetch = { noteApi.getNotes() },
+            saveFetchResult = { response ->
+                response.body()?.let {
+                    //TODO: Insert notes in database
+                }
+            },
+            shouldFetch = {
+                context.checkForInternetConnection()
+            }
+        )
+    }
 
     override suspend fun register(email: String, password: String): Resource<String> {
         if (!context.checkForInternetConnection()) {
